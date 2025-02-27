@@ -1,5 +1,6 @@
 package com.poweroftwo.potms_backend.user.repository.entities;
 
+import com.poweroftwo.potms_backend.access_key.entity.Key;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +21,7 @@ import java.util.List;
 @Table(name="user_table")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
     private String firstName;
     private String lastName;
@@ -28,6 +29,9 @@ public class User implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private List<Key> userKeys;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
