@@ -1,7 +1,5 @@
 package com.poweroftwo.potms_backend.authentication.services;
 
-import com.poweroftwo.potms_backend.user.services.RedisUserService;
-import com.poweroftwo.potms_backend.user.services.RedisUserServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

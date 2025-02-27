@@ -1,6 +1,5 @@
 package com.poweroftwo.potms_backend.balance.services.rabbitmq;
 
-import com.rabbitmq.client.AMQP;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
