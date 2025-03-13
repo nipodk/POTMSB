@@ -9,4 +9,5 @@ public class AccountUpdateResponse {
     private AccountUpdate accountUpdate;
     private String email;
     private String keyName;
+    private String eventName;
 }

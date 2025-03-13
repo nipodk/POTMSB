@@ -5,9 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class OrderTradeResponse {
-    private OrderTradeUpdate orderTradeUpdate;
-    private String email;
+public class BinanceStreamKeyDto {
+    private String apiKey;
+    private String userEmail;
     private String keyName;
-    private String eventName;
 }

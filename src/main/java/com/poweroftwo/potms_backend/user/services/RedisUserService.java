@@ -8,4 +8,7 @@ public interface RedisUserService {
     Map<Object, Object> getUserSession(String email, String listenKeyName);
     UserSessionDto getSessionInfo(String keyName);
     Set<String> getAllUserKeys();
+    boolean keyExists(String key);
+    String generateKeyName(String email, String keyName);
+    boolean removeUserSession(String keyName);
 }
