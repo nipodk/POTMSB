@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Configuration
 @RequiredArgsConstructor
 public class ClientBalanceWebSocket extends TextWebSocketHandler {
-    private final BinanceWebSocketConnectionService binanceWebSocketConnectionService;
+    private final BinanceWebSocketConnectionService binanceWebSocketConnectionServiceImpl;
     private static final Map<String, SessionDto> sessions = new ConcurrentHashMap<>();
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -35,7 +35,7 @@ public class ClientBalanceWebSocket extends TextWebSocketHandler {
         final JSONObject jsonObject = new JSONObject(clientMsg);
         final String clientEmail = jsonObject.getString("email");
         sessions.put(session.getId(), new SessionDto(session, clientEmail));
-        binanceWebSocketConnectionService.connectToStream(clientEmail);
+        binanceWebSocketConnectionServiceImpl.connectAllKeysToStream(clientEmail);
     }
 
     public static void sendMessageToAllClients(String message) throws Exception {

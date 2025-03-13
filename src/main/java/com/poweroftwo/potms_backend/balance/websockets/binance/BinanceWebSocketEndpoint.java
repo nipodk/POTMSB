@@ -20,6 +20,8 @@ public class BinanceWebSocketEndpoint {
     private RabbitTemplate rabbitTemplate;
     private ObjectMapper objectMapper;
     private BinanceWebSocketMessageParser binanceWebSocketMessageParser;
+    private static final String ORDER_TRADE_UPDATE = "ORDER_TRADE_UPDATE";
+    private static final String ACCOUNT_UPDATE = "ACCOUNT_UPDATE";
     @OnOpen
     public void onOpen(Session session) {
         System.out.println("WebSocket connected: " + session.getId());
@@ -32,9 +34,9 @@ public class BinanceWebSocketEndpoint {
     public void onMessage(String message, Session session) {
             final JSONObject jsonObject = new JSONObject(message);
             final String eventType = jsonObject.getString("e");
-            if (eventType.equals("ORDER_TRADE_UPDATE")) {
+            if (eventType.equals(ORDER_TRADE_UPDATE)) {
                 final OrderTradeUpdate orderTradeUpdate = binanceWebSocketMessageParser.parseOrderTradeUpdateMsg(message);
-                final OrderTradeResponse orderTradeResponse = new OrderTradeResponse(orderTradeUpdate, binanceWebSocketConfig.getEmail(), binanceWebSocketConfig.getKeyName());
+                final OrderTradeResponse orderTradeResponse = new OrderTradeResponse(orderTradeUpdate, binanceWebSocketConfig.getEmail(), binanceWebSocketConfig.getKeyName(), ORDER_TRADE_UPDATE);
                 try {
                     final String jsonResponse = objectMapper.writeValueAsString(orderTradeResponse);
                     rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, RabbitMQConfig.ROUTING_KEY, jsonResponse);
@@ -42,9 +44,9 @@ public class BinanceWebSocketEndpoint {
                     System.out.println("Couldn't convert to json orderTradeResponse");
                 }
                 System.out.println(orderTradeUpdate);
-            } else if (eventType.equals("ACCOUNT_UPDATE")) {
+            } else if (eventType.equals(ACCOUNT_UPDATE)) {
                 final AccountUpdate accountUpdate = binanceWebSocketMessageParser.parseAccountUpdate(message);
-                final AccountUpdateResponse accountUpdateResponse = new AccountUpdateResponse(accountUpdate, binanceWebSocketConfig.getEmail(), binanceWebSocketConfig.getKeyName());
+                final AccountUpdateResponse accountUpdateResponse = new AccountUpdateResponse(accountUpdate, binanceWebSocketConfig.getEmail(), binanceWebSocketConfig.getKeyName(), ACCOUNT_UPDATE);
                 try {
                     final String jsonResponse = objectMapper.writeValueAsString(accountUpdateResponse);
                     rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, RabbitMQConfig.ROUTING_KEY, jsonResponse);

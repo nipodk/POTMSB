@@ -1,8 +1,9 @@
 package com.poweroftwo.potms_backend.user.services;
 
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
-import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +18,11 @@ public class RedisUserServiceImpl implements RedisUserService {
     private final StringRedisTemplate redisTemplate;
     private static final String USER_SESSION_PREFIX = "USER_SESSION";
 
-    public void storeUserSession(String email, String listenKey, String listenKeyName) {
-        final String key = generateKeyName(email, listenKeyName);
+    public void storeUserSession(String email, String listenKey, String keyName) {
+        final String key = generateKeyName(email, keyName);
         redisTemplate.opsForHash().put(key, "email", email);
         redisTemplate.opsForHash().put(key, "listenKey", listenKey);
-        redisTemplate.opsForHash().put(key, "listenKeyName", listenKeyName);
+        redisTemplate.opsForHash().put(key, "keyName", keyName);
         redisTemplate.expire(key, Duration.ofHours(24));
     }
 
@@ -39,10 +40,6 @@ public class RedisUserServiceImpl implements RedisUserService {
     }
 
 
-//    public Map<Object, Object> getUserSession(String email, String listenKeyName) {
-//        final String key = generateKeyName(email, listenKeyName);
-//        return redisTemplate.opsForHash().entries(key);
-//    }
 
     public Set<String> getAllUserKeys() {
         return redisTemplate.execute((RedisConnection connection) -> {
@@ -58,8 +55,23 @@ public class RedisUserServiceImpl implements RedisUserService {
         });
     }
 
-    private String generateKeyName(String email, String listenKeyName){
-        return USER_SESSION_PREFIX + "_" + email + "_" + listenKeyName;
+    public boolean keyExists(String key) {
+        return redisTemplate.hasKey(key);
+    }
+
+    public String generateKeyName(String email, String keyName){
+        return USER_SESSION_PREFIX + "_" + email + "_" + keyName;
+    }
+
+    @Override
+    public boolean removeUserSession(String keyName) {
+        return redisTemplate.delete(keyName);
+    }
+
+    @PostConstruct
+    public void clearRedisOnStartup() {
+        redisTemplate.getConnectionFactory().getConnection().serverCommands().flushDb();
+        System.out.println("Redis database cleared on application startup.");
     }
 
 
