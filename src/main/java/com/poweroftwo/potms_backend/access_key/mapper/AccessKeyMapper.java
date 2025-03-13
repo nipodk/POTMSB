@@ -15,7 +15,6 @@ public interface AccessKeyMapper {
     Key createDtoToEntity(KeyCreateRequest keyCreateRequest);
     KeyCreateResponse entityToCreateDtoResponse(Key key);
     @Mapping(target = "apiKey", ignore = true)
-    @Mapping(target = "secreteKey", ignore = true)
     KeyDto entityToGetDtoResponse(Key key);
 
 }

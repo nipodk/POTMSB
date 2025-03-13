@@ -1,12 +1,11 @@
 package com.poweroftwo.potms_backend.access_key.controllers.dtos;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
-public class KeyDto {
-    private String keyName;
+@AllArgsConstructor
+public class KeyCheckResponse {
     private String apiKey;
-    private Date createTime;
+    private boolean valid;
 }
