@@ -10,6 +10,7 @@ import java.util.Date;
 public class KeyCreateRequest {
     private String keyName;
     private String apiKey;
+    private String secreteKey;
     private Date createTime;
     private String userEmail;
 }

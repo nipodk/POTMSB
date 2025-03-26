@@ -8,5 +8,6 @@ import java.util.Date;
 public class KeyDto {
     private String keyName;
     private String apiKey;
+    private String secreteKey;
     private Date createTime;
 }

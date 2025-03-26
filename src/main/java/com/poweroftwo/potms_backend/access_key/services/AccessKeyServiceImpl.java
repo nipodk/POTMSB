@@ -49,6 +49,7 @@ public class AccessKeyServiceImpl implements AccessKeyService {
         }
         final Key key = accessKeyMapper.createDtoToEntity(keyCreateRequest);
         key.setApiKey(keyHasher.encrypt(keyCreateRequest.getApiKey()));
+        key.setSecreteKey(keyHasher.encrypt(keyCreateRequest.getSecreteKey()));
         key.setUserId(user.get().getId());
         final boolean keyIsValid = checkKey(keyCreateRequest.getApiKey());
         if(!keyIsValid) {
@@ -67,6 +68,12 @@ public class AccessKeyServiceImpl implements AccessKeyService {
             final KeyDto keyDto = accessKeyMapper.entityToGetDtoResponse(key);
             try {
                 keyDto.setApiKey(keyHasher.decrypt(key.getApiKey()));
+            } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException |
+                     IllegalBlockSizeException | BadPaddingException e) {
+                throw new RuntimeException("Can't decrypt the api key");
+            }
+            try {
+                keyDto.setApiKey(keyHasher.decrypt(key.getSecreteKey()));
             } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException |
                      IllegalBlockSizeException | BadPaddingException e) {
                 throw new RuntimeException("Can't decrypt the api key");

@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Configuration
 @RequiredArgsConstructor
-public class ClientBalanceWebSocket extends TextWebSocketHandler {
+public class ClientPositionDataWebSocket extends TextWebSocketHandler {
     private final BinanceWebSocketConnectionService binanceWebSocketConnectionServiceImpl;
     private static final Map<String, SessionDto> sessions = new ConcurrentHashMap<>();
     @Override

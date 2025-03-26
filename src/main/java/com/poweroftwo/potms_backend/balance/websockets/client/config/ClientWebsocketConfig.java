@@ -1,6 +1,7 @@
 package com.poweroftwo.potms_backend.balance.websockets.client.config;
 
-import com.poweroftwo.potms_backend.balance.websockets.client.ClientBalanceWebSocket;
+import com.poweroftwo.potms_backend.balance.websockets.client.ClientPositionPnlWebSocket;
+import com.poweroftwo.potms_backend.balance.websockets.client.ClientPositionDataWebSocket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -11,11 +12,15 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 @RequiredArgsConstructor
 public class ClientWebsocketConfig implements WebSocketConfigurer {
-    private final ClientBalanceWebSocket clientBalanceWebSocket;
+    private final ClientPositionDataWebSocket clientPositionDataWebSocket;
+    private final ClientPositionPnlWebSocket clientPositionPnlWebSocket;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(clientBalanceWebSocket, "/ws/balance-stream")
+        registry.addHandler(clientPositionDataWebSocket, "/ws/positions-stream")
+                .addHandler(clientPositionPnlWebSocket, "/ws/balance-stream")
                 .setAllowedOrigins("*");
     }
+
+
 }

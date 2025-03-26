@@ -7,7 +7,7 @@ import com.poweroftwo.potms_backend.balance.websockets.binance.services.dto.Acco
 import com.poweroftwo.potms_backend.balance.websockets.binance.services.dto.AccountUpdateResponse;
 import com.poweroftwo.potms_backend.balance.websockets.binance.services.dto.OrderTradeResponse;
 import com.poweroftwo.potms_backend.balance.websockets.binance.services.dto.OrderTradeUpdate;
-import com.poweroftwo.potms_backend.balance.services.rabbitmq.RabbitMQConfig;
+import com.poweroftwo.potms_backend.balance.services.rabbitmq.RabbitMQUserDataConfig;
 import jakarta.websocket.*;
 import lombok.AllArgsConstructor;
 import org.json.JSONObject;
@@ -15,7 +15,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 @ClientEndpoint
 @AllArgsConstructor
-public class BinanceWebSocketEndpoint {
+public class BinanceUserWebSocketEndpoint {
     private BinanceWebSocketConfig binanceWebSocketConfig;
     private RabbitTemplate rabbitTemplate;
     private ObjectMapper objectMapper;
@@ -39,7 +39,7 @@ public class BinanceWebSocketEndpoint {
                 final OrderTradeResponse orderTradeResponse = new OrderTradeResponse(orderTradeUpdate, binanceWebSocketConfig.getEmail(), binanceWebSocketConfig.getKeyName(), ORDER_TRADE_UPDATE);
                 try {
                     final String jsonResponse = objectMapper.writeValueAsString(orderTradeResponse);
-                    rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, RabbitMQConfig.ROUTING_KEY, jsonResponse);
+                    rabbitTemplate.convertAndSend(RabbitMQUserDataConfig.EXCHANGE_NAME, RabbitMQUserDataConfig.ROUTING_KEY, jsonResponse);
                 } catch (JsonProcessingException err) {
                     System.out.println("Couldn't convert to json orderTradeResponse");
                 }
@@ -49,7 +49,7 @@ public class BinanceWebSocketEndpoint {
                 final AccountUpdateResponse accountUpdateResponse = new AccountUpdateResponse(accountUpdate, binanceWebSocketConfig.getEmail(), binanceWebSocketConfig.getKeyName(), ACCOUNT_UPDATE);
                 try {
                     final String jsonResponse = objectMapper.writeValueAsString(accountUpdateResponse);
-                    rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, RabbitMQConfig.ROUTING_KEY, jsonResponse);
+                    rabbitTemplate.convertAndSend(RabbitMQUserDataConfig.EXCHANGE_NAME, RabbitMQUserDataConfig.ROUTING_KEY, jsonResponse);
                 } catch (JsonProcessingException err) {
                     System.out.println("Couldn't convert to json accountUpdateResponse");
                 }
