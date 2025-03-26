@@ -32,7 +32,7 @@ public class BinanceUserWebSocket {
             final BinanceWebSocketConfig binanceWebSocketConfig = new BinanceWebSocketConfig(listenKey, keyName, email);
             final String redisKey = redisUserService.generateKeyName(email, keyName);
             if(!redisUserService.keyExists(redisKey)){
-                Session session = container.connectToServer(new BinanceWebSocketEndpoint(binanceWebSocketConfig,  rabbitTemplate, objectMapper, binanceWebSocketMessageParser), uri);
+                Session session = container.connectToServer(new BinanceUserWebSocketEndpoint(binanceWebSocketConfig,  rabbitTemplate, objectMapper, binanceWebSocketMessageParser), uri);
                 activeSessions.put(keyName, session);
                 redisUserService.storeUserSession(email, listenKey, keyName);
                 System.out.println("WebSocket connected to Binance with listenKey: " + listenKey);
