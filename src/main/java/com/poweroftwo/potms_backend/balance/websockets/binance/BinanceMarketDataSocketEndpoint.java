@@ -22,7 +22,7 @@ public class BinanceMarketDataSocketEndpoint {
     private final String clientEmail;
     @OnOpen
     public void onOpen(Session session) {
-        System.out.println("WebSocket connected: " + session.getId());
+        System.out.println("WebSocket connected Binance market: " + session.getId());
     }
 
     @OnMessage
@@ -35,14 +35,13 @@ public class BinanceMarketDataSocketEndpoint {
             if(positionData.containsKey(coinPair)){
                 PartialPositionData partialPositionData = positionData.get(coinPair);
                 float PNL = (coinPrice - partialPositionData.getEntryPrice()) * partialPositionData.getPositionAmt();
-                PnlPositionDataMsg pnlPositionData = new PnlPositionDataMsg(clientEmail, key, PNL, new PositionData(coinPair, partialPositionData.getEntryPrice(), partialPositionData.getPositionAmt()));
+                PnlPositionDataMsg pnlPositionData = new PnlPositionDataMsg(clientEmail, key, PNL, new PositionData(coinPair, partialPositionData.getEntryPrice(), partialPositionData.getPositionAmt(), partialPositionData.getMarketData()));
                 try {
                     final String jsonResponse = objectMapper.writeValueAsString(pnlPositionData);
                     rabbitTemplate.convertAndSend(RabbitMqMarketDataConfig.EXCHANGE_NAME, RabbitMqMarketDataConfig.ROUTING_KEY, jsonResponse);
                 } catch (JsonProcessingException err) {
                     System.out.println("Couldn't convert to json orderTradeResponse");
                 }
-                System.out.println("Received WebSocket message: " + coinPair + " " + pnlPositionData);
             }
         });
     }

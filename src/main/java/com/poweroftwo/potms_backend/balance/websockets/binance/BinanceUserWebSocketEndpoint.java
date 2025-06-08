@@ -8,6 +8,7 @@ import com.poweroftwo.potms_backend.balance.websockets.binance.services.dto.Acco
 import com.poweroftwo.potms_backend.balance.websockets.binance.services.dto.OrderTradeResponse;
 import com.poweroftwo.potms_backend.balance.websockets.binance.services.dto.OrderTradeUpdate;
 import com.poweroftwo.potms_backend.balance.services.rabbitmq.RabbitMQUserDataConfig;
+import com.poweroftwo.potms_backend.balance.websockets.client.services.BinanceMarketDataConnection;
 import jakarta.websocket.*;
 import lombok.AllArgsConstructor;
 import org.json.JSONObject;
@@ -20,6 +21,8 @@ public class BinanceUserWebSocketEndpoint {
     private RabbitTemplate rabbitTemplate;
     private ObjectMapper objectMapper;
     private BinanceWebSocketMessageParser binanceWebSocketMessageParser;
+    private BinanceMarketDataWebSocket binanceMarketDataWebSocket;
+    private BinanceMarketDataConnection binanceMarketDataConnection;
     private static final String ORDER_TRADE_UPDATE = "ORDER_TRADE_UPDATE";
     private static final String ACCOUNT_UPDATE = "ACCOUNT_UPDATE";
     @OnOpen
@@ -37,6 +40,10 @@ public class BinanceUserWebSocketEndpoint {
             if (eventType.equals(ORDER_TRADE_UPDATE)) {
                 final OrderTradeUpdate orderTradeUpdate = binanceWebSocketMessageParser.parseOrderTradeUpdateMsg(message);
                 final OrderTradeResponse orderTradeResponse = new OrderTradeResponse(orderTradeUpdate, binanceWebSocketConfig.getEmail(), binanceWebSocketConfig.getKeyName(), ORDER_TRADE_UPDATE);
+                if(orderTradeResponse.getOrderTradeUpdate().getStatus().equals("FILLED")){
+                    binanceMarketDataWebSocket.disconnect(binanceWebSocketConfig.getEmail());
+                    binanceMarketDataConnection.connect(binanceWebSocketConfig.getEmail());
+                }
                 try {
                     final String jsonResponse = objectMapper.writeValueAsString(orderTradeResponse);
                     rabbitTemplate.convertAndSend(RabbitMQUserDataConfig.EXCHANGE_NAME, RabbitMQUserDataConfig.ROUTING_KEY, jsonResponse);

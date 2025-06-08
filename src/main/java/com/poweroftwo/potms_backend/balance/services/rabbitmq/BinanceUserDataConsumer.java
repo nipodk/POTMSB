@@ -1,6 +1,6 @@
 package com.poweroftwo.potms_backend.balance.services.rabbitmq;
 
-import com.poweroftwo.potms_backend.balance.websockets.client.ClientPositionPnlWebSocket;
+import com.poweroftwo.potms_backend.balance.websockets.client.ClientPositionDataWebSocket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class BinanceUserDataConsumer {
     @RabbitListener(queues = RabbitMQUserDataConfig.QUEUE_NAME)
     public void consumeData(String message) throws Exception {
-        ClientPositionPnlWebSocket.sendMessageToAllClients(message);
+        ClientPositionDataWebSocket.sendMessageToAllClients(message);
     }
 }
 

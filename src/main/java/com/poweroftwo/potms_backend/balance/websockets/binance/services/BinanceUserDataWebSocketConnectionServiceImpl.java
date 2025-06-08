@@ -25,7 +25,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class BinanceWebSocketConnectionServiceImpl implements BinanceWebSocketConnectionService {
+public class BinanceUserDataWebSocketConnectionServiceImpl implements BinanceWebSocketConnectionService {
     private final BinanceUserWebSocket binanceUserWebSocket;
     private final BinanceFutureRestService binanceFutureRestService;
     private final AccessKeyRepository accessKeyRepository;
