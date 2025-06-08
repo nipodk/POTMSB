@@ -9,4 +9,5 @@ public class PositionData {
     private String symbol;
     private float entryPrice;
     private float positionAmt;
+    private float marketPrice;
 }

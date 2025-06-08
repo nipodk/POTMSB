@@ -10,6 +10,7 @@ public class PositionDataMapper {
         final String symbol = data.getString("symbol");
         final float entryPrice = data.getFloat("entryPrice");
         final float positionAmt = data.getFloat("positionAmt");
-        return new PositionData(symbol, entryPrice, positionAmt);
+        final float marketPrice = data.getFloat("markPrice");
+        return new PositionData(symbol, entryPrice, positionAmt, marketPrice);
     }
 }
