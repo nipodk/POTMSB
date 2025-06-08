@@ -4,6 +4,8 @@ import com.poweroftwo.potms_backend.authentication.services.AuthenticationServic
 import com.poweroftwo.potms_backend.authentication.services.dtos.AuthenticationRequest;
 import com.poweroftwo.potms_backend.authentication.services.dtos.AuthenticationResponse;
 import com.poweroftwo.potms_backend.authentication.services.dtos.RegisterRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +13,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-public class AuthenticationController {
+@Tag(name = "Authentication Controller", description = "Manage user's authentication")
+    public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
+    @Operation(summary = "Register a user")
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request
     ){
@@ -23,7 +27,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> register(
+    @Operation(summary = "Log in a user")
+    public ResponseEntity<AuthenticationResponse> login(
             @RequestBody AuthenticationRequest request
     ){
         return ResponseEntity.ok(authenticationService.authenticate(request));
