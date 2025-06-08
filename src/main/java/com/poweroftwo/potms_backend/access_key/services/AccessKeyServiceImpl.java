@@ -6,7 +6,6 @@ import com.poweroftwo.potms_backend.access_key.mapper.AccessKeyMapper;
 import com.poweroftwo.potms_backend.access_key.repository.AccessKeyRepository;
 import com.poweroftwo.potms_backend.balance.services.BinanceFutureRestService;
 import com.poweroftwo.potms_backend.balance.websockets.binance.BinanceUserWebSocket;
-import com.poweroftwo.potms_backend.balance.websockets.binance.services.BinanceWebSocketConnectionService;
 import com.poweroftwo.potms_backend.user.repository.UserRepository;
 import com.poweroftwo.potms_backend.user.repository.entities.User;
 import com.poweroftwo.potms_backend.user.services.RedisUserService;
@@ -32,7 +31,6 @@ public class AccessKeyServiceImpl implements AccessKeyService {
     private final AccessKeyMapper accessKeyMapper;
     private final UserRepository userRepository;
     private final KeyHasherImpl keyHasher;
-    private final BinanceWebSocketConnectionService binanceWebSocketConnectionService;
     private final BinanceFutureRestService binanceFutureRestService;
     private final RedisUserService redisUserService;
     private final BinanceUserWebSocket binanceUserWebSocket;
