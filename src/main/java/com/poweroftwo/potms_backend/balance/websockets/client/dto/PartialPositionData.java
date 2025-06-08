@@ -8,4 +8,5 @@ import lombok.Data;
 public class PartialPositionData {
     private float entryPrice;
     private float positionAmt;
+    private float marketData;
 }

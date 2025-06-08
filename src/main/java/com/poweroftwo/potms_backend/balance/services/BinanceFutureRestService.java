@@ -16,19 +16,20 @@ import java.util.Optional;
 
 @Service
 public class BinanceFutureRestService {
-    final static String FUTURES_API = "https://fapi.binance.com/fapi/v1";
-    final static String POSITIONS_API = "https://fapi.binance.com/fapi/v3";
-    final WebClient webClient = WebClient.builder()
+    final private static String FUTURES_API = "https://fapi.binance.com/fapi/v1";
+    final private static String POSITIONS_API = "https://fapi.binance.com/fapi/v3";
+    final private WebClient webClientFuturesApi = WebClient.builder()
             .baseUrl(FUTURES_API)
             .defaultHeader("Content-Type", "application/json")
             .build();
 
-    final WebClient webPositions = WebClient.builder()
+    final private WebClient webClientPositionsApi = WebClient.builder()
             .baseUrl(POSITIONS_API)
             .defaultHeader("Content-Type", "application/json")
             .build();
+
     public ResponseEntity<Optional<String>> getFuturesListenKey(String apiKey) {
-        Mono<String> response = webClient.post()
+        Mono<String> response = webClientFuturesApi.post()
                 .uri("/listenKey")
                 .header("X-MBX-APIKEY", apiKey)
                 .retrieve()
@@ -38,7 +39,7 @@ public class BinanceFutureRestService {
     }
 
     public void updateListenKey(String apiKey) {
-        Mono<String> response = webClient.put()
+        Mono<String> response = webClientFuturesApi.put()
                 .uri("/listenKey")
                 .header("X-MBX-APIKEY", apiKey)
                 .retrieve()
@@ -48,7 +49,7 @@ public class BinanceFutureRestService {
     }
 
     public ResponseEntity<Optional<String>> getFuturesServerTime() {
-        Mono<String> response = webClient.get()
+        Mono<String> response = webClientFuturesApi.get()
                 .uri("/time")
                 .retrieve()
                 .bodyToMono(String.class);
@@ -63,7 +64,7 @@ public class BinanceFutureRestService {
         Mac mac = Mac.getInstance("HmacSHA256");
         mac.init(keySpec);
         byte[] hash = mac.doFinal(queryString.getBytes(StandardCharsets.UTF_8));
-        Mono<String> response = webPositions.get()
+        Mono<String> response = webClientPositionsApi.get()
                 .uri(String.format("/positionRisk?timestamp=%s&signature=%s", time, Hex.encodeHexString(hash)))
                 .header("X-MBX-APIKEY", apiKey)
                 .retrieve()

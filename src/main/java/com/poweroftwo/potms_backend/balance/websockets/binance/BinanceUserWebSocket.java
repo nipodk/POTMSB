@@ -2,6 +2,7 @@ package com.poweroftwo.potms_backend.balance.websockets.binance;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poweroftwo.potms_backend.balance.websockets.binance.services.BinanceWebSocketMessageParser;
+import com.poweroftwo.potms_backend.balance.websockets.client.services.BinanceMarketDataConnection;
 import com.poweroftwo.potms_backend.user.services.RedisUserService;
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.ContainerProvider;
@@ -24,6 +25,8 @@ public class BinanceUserWebSocket {
     private final BinanceWebSocketMessageParser binanceWebSocketMessageParser;
     private final RabbitTemplate rabbitTemplate;
     private final RedisUserService redisUserService;
+    private final BinanceMarketDataWebSocket binanceMarketDataWebSocket;
+    private final BinanceMarketDataConnection binanceMarketDataConnection;
     private final Map<String, Session> activeSessions = new ConcurrentHashMap<>();
     public void connect(String listenKey, String keyName, String email) {
         try {
@@ -32,7 +35,7 @@ public class BinanceUserWebSocket {
             final BinanceWebSocketConfig binanceWebSocketConfig = new BinanceWebSocketConfig(listenKey, keyName, email);
             final String redisKey = redisUserService.generateKeyName(email, keyName);
             if(!redisUserService.keyExists(redisKey)){
-                Session session = container.connectToServer(new BinanceUserWebSocketEndpoint(binanceWebSocketConfig,  rabbitTemplate, objectMapper, binanceWebSocketMessageParser), uri);
+                Session session = container.connectToServer(new BinanceUserWebSocketEndpoint(binanceWebSocketConfig,  rabbitTemplate, objectMapper, binanceWebSocketMessageParser, binanceMarketDataWebSocket, binanceMarketDataConnection), uri);
                 activeSessions.put(keyName, session);
                 redisUserService.storeUserSession(email, listenKey, keyName);
                 System.out.println("WebSocket connected to Binance with listenKey: " + listenKey);
